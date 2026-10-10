@@ -2,6 +2,21 @@
 // different answer, so callers should leave unmatched fields for manual review.
 const normalize = value => String(value ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
 
+// Normalize extracted labels such as mobile_number, contact-number, and mobileNumber.
+export const normalizeLabel = value => String(value ?? '')
+  .replace(/([a-z])([A-Z])/g, '$1 $2')
+  .replace(/[_-]+/g, ' ')
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+// Search saved facts by normalized label, not by their raw spelling.
+export function findFactIndexByLabel(facts, pattern) {
+  if (!Array.isArray(facts) || !(pattern instanceof RegExp)) return -1;
+  return facts.findIndex(fact => pattern.test(normalizeLabel(fact?.label)));
+}
+
 export function findExactSelectOption(options, value) {
   const wanted = normalize(value);
   if (!wanted || !Array.isArray(options)) return null;
