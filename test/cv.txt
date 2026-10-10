@@ -1,0 +1,17 @@
+Aarav Sharma
+Curriculum Vitae
+
+Address: Lakeside, Pokhara, Nepal
+Email: aarav.sharma@example.com
+Phone: +977 9812345678
+Date of Birth: 14 March 2003
+Gender: Male
+Nationality: Nepali
+
+Education
+B.Sc. Computer Science, Tribhuvan University
+Expected graduation: June 2026
+GPA: 3.7/4.0
+
+Skills: Python, JavaScript, SQL, data analysis
+Languages: Nepali, English, Hindi

@@ -1,1 +1,19 @@
-
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif}
+body{width:400px;margin:0;padding:12px;font-size:13px}
+button{padding:6px 10px;border-radius:6px;border:1px solid #8886;cursor:pointer}
+button.primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.row{display:grid;grid-template-columns:18px 1fr;gap:6px;padding:6px 0;border-bottom:1px solid #8883}
+.row input[type=text]{width:100%;box-sizing:border-box;padding:4px;border:1px solid #8886;border-radius:5px;background:transparent;color:inherit}
+.muted{opacity:.65;font-size:11px} #list{max-height:340px;overflow:auto;margin:8px 0}
+</style></head><body>
+<button class="primary" id="scan">Scan form &amp; match</button>
+<button id="docs">Documents…</button>
+<div class="muted" style="float:right">v0.2</div><div id="status" class="muted" style="margin:8px 0"></div>
+<div id="list"></div>
+<button class="primary" id="fill" hidden>Fill selected (won't submit)</button>
+<div id="blank" class="muted"></div>
+<script type="module" src="popup.js"></script>
+</body></html>

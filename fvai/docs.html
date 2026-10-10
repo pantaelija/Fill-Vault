@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Formfilling AI – Documents</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif}
+body{max-width:860px;margin:32px auto;padding:0 16px;line-height:1.45}
+h1{font-size:22px} h2{font-size:16px;margin-top:28px}
+section{border:1px solid #8884;border-radius:10px;padding:14px;margin:12px 0}
+button{padding:6px 12px;border-radius:6px;border:1px solid #8886;cursor:pointer}
+button.primary{background:#4f46e5;color:#fff;border-color:#4f46e5}
+input[type=text]{padding:5px;border:1px solid #8886;border-radius:6px;background:transparent;color:inherit}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:5px;border-bottom:1px solid #8883;text-align:left;vertical-align:top}
+td input{width:100%;box-sizing:border-box} .muted{opacity:.65;font-size:12px}
+#log{white-space:pre-wrap;font-size:13px;margin-top:8px}
+</style></head><body>
+<h1>Formfilling AI</h1>
+<p class="muted">100% local: files are read in your browser, images are read by built-in OCR, and facts are extracted by your local Ollama model. Original files are never stored.</p>
+
+<section><h2 style="margin-top:0">1. Local model</h2>
+  Model: <input type="text" id="model" size="22"> <button id="saveModel">Save</button> <button id="check">Check Ollama</button>
+  <div id="modelMsg" class="muted"></div></section>
+
+<section><h2 style="margin-top:0">2. Add documents</h2>
+  <input type="file" id="files" multiple accept=".pdf,.docx,.txt,.md,.csv,.png,.jpg,.jpeg,.webp">
+  <button class="primary" id="go">Extract facts</button>
+  <div class="muted">PDF (text or scanned), images (PNG, JPG, WebP), DOCX, TXT. Images and scans are read with English OCR, which can misread blurry photos or handwriting, so check the facts below.</div>
+  <div id="log"></div></section>
+
+<section><h2 style="margin-top:0">3. Your facts <span class="muted">(edit or delete anything wrong)</span></h2>
+  <table><thead><tr><th>Label</th><th>Value</th><th>Source</th><th></th></tr></thead><tbody id="facts"></tbody></table>
+  <p><button id="wipe">Erase everything</button></p></section>
+
+<script src="lib/mammoth.browser.min.js"></script>
+<script src="lib/tesseract/tesseract.min.js"></script>
+<script type="module" src="docs.js"></script>
+</body></html>

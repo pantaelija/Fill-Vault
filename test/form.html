@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Scholarship Application (test)</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:620px;margin:32px auto;padding:0 16px}
+label{display:block;margin:12px 0 4px;font-weight:600}
+input,select,textarea{width:100%;box-sizing:border-box;padding:8px;font:inherit}
+button{margin-top:18px;padding:10px 16px}
+</style></head><body>
+<h1>Scholarship Application</h1>
+<form id="f">
+  <label for="fn">First name</label><input id="fn" name="firstName">
+  <label for="sn">Surname</label><input id="sn" name="surname">
+  <label for="dob">Date of birth</label><input id="dob" name="dob" type="date">
+  <label for="gender">Gender</label>
+  <select id="gender" name="gender"><option value="">Select</option><option>Female</option><option>Male</option><option>Other</option></select>
+  <label for="nat">Nationality</label>
+  <select id="nat" name="nationality"><option value="">Select</option><option>Indian</option><option>Nepali</option><option>British</option></select>
+  <label for="nid">National ID</label><input id="nid" name="nationalId">
+  <label for="pp">Passport number</label><input id="pp" name="passport">
+  <label for="em">Email</label><input id="em" name="email" type="email">
+  <label for="ph">Phone</label><input id="ph" name="phone" type="tel">
+  <label for="ad">Address</label><input id="ad" name="address">
+  <label for="in">Institution</label><input id="in" name="institution">
+  <label for="dg">Degree</label><input id="dg" name="degree">
+  <label for="gp">GPA</label><input id="gp" name="gpa" type="number" step="0.01">
+  <label for="gd">Expected graduation</label><input id="gd" name="graduation">
+  <label for="lg">Languages</label><input id="lg" name="languages">
+  <label for="sk">Skills</label><input id="sk" name="skills">
+  <label for="st">Personal statement</label><textarea id="st" name="statement" rows="4"></textarea>
+  <button type="submit">Submit (blocked in this test)</button>
+</form>
+<script>document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();alert('Submission blocked in test form.')})</script>
+</body></html>
