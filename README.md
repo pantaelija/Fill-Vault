@@ -1,6 +1,13 @@
 # Fill-Vault
 
-Fill-Vault is a browser extension that uses a local AI model to suggest web-form values from your own documents. You review suggestions and source evidence before filling fields. It does not submit forms automatically.
+**Fill out web forms with help from your own documents — while keeping control of every value.**
+
+Fill-Vault is a browser extension powered by the open-source `qwen2.5:7b` model running locally through Ollama. It extracts facts from documents, suggests matching form fields, and shows source evidence so you can review each suggestion. It never submits a form for you.
+
+- **Download:** [GitHub Releases](https://github.com/pantaelija/Fill-Vault/releases) — choose `Fill-Vault.zip` from the latest release.
+- **Install help:** follow the beginner steps below.
+- **Issues and help:** [Report a problem or ask a question](https://github.com/pantaelija/Fill-Vault/issues).
+- **Contributing:** see [Contributing](CONTRIBUTING.md).
 
 ## What you need
 
@@ -14,7 +21,7 @@ Fill-Vault is a browser extension that uses a local AI model to suggest web-form
 
 The model is downloaded separately; it is not included in this repository or the extension ZIP.
 
-## Recommended installation (prepared release)
+## Install Fill-Vault (beginner-friendly)
 
 1. Open the project's [GitHub Releases](https://github.com/pantaelija/Fill-Vault/releases) page.
 2. Download `Fill-Vault.zip` from the release assets and extract it to a permanent folder.
@@ -40,7 +47,7 @@ Do not load the ZIP file itself; extract it first. Do not select the repository 
 
 Fill-Vault sends local requests to Ollama. Ollama must be running and its allowed-origin configuration must include the installed extension's origin. Extension IDs can vary when the extension is loaded unpacked, so a wildcard extension origin may be used in a local development setup; only do this if you understand and trust the extensions running in your browser.
 
-For a temporary macOS/Linux terminal session, quit the Ollama desktop app/service first, then start the server in a terminal with:
+For a temporary macOS/Linux terminal session, quit the Ollama desktop app/service first, then start the server in Terminal with:
 
 ```bash
 OLLAMA_ORIGINS="chrome-extension://*,moz-extension://*" ollama serve
@@ -52,7 +59,7 @@ For Windows, set `OLLAMA_ORIGINS` in the environment used to launch Ollama, then
 
 Never expose the Ollama API to the public internet. Keep it bound to localhost and only allow origins you trust. If a request fails, check the extension's error message and the Ollama logs.
 
-## Build from source (developers)
+## For contributors: build from source
 
 Install a current Node.js LTS release. Then:
 
@@ -66,7 +73,7 @@ bash build-release.sh
 
 `setup.sh` prepares document-processing libraries under `fvai/lib/`. `build-release.sh` checks the generated files and creates `dist/Fill-Vault.zip`. The ZIP is a distribution artifact and is not committed to Git.
 
-Commit `package.json` and `package-lock.json` so dependency versions remain reproducible. Do not commit generated `node_modules/`, `fvai/lib/`, or `dist/` files.
+Keep `package.json` and `package-lock.json` in sync. Do not commit generated `node_modules/`, `fvai/lib/`, or `dist/` files.
 
 ## Optional local sample form
 
@@ -105,7 +112,7 @@ Review the proposed value and source evidence. Leave uncertain fields blank and 
 
 The project is designed to use a local model, but verify the extension's actual network requests, browser storage and permissions before using sensitive documents. Use fictional sample data for demos. Always review AI-generated values; do not automatically submit forms containing legal, financial, medical or identity information.
 
-## Development and release checklist
+## Before publishing a release
 
 Before publishing a release, test the extracted ZIP in a clean Chrome profile and verify:
 - the extension loads without errors;
@@ -118,4 +125,4 @@ Before publishing a release, test the extracted ZIP in a clean Chrome profile an
 
 ## License
 
-See [LICENSE](LICENSE).
+See [LICENSE](LICENSE). Contributions are welcome; please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
