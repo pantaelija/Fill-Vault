@@ -2,10 +2,20 @@
   "manifest_version": 3,
   "name": "Formfilling AI",
   "version": "0.2.1",
-  "description": "Fill web forms from your own documents using a local AI model. Nothing leaves your computer.",
-  "action": { "default_popup": "popup.html", "default_title": "Formfilling AI" },
-  "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["http://localhost:11434/*", "http://127.0.0.1:11434/*"],
+  "description": "Fill web forms from your documents using a local AI model.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Formfilling AI"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:11434/*",
+    "http://127.0.0.1:11434/*"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self' http://localhost:11434 http://127.0.0.1:11434"
   }
