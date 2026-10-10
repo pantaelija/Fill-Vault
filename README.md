@@ -1,138 +1,120 @@
 # Fill-Vault
 
-Fill-Vault is a browser extension that uses a local AI model to suggest form values from your own documents. It is designed to provide source evidence for suggestions, leave unsupported fields blank, and let you review values before filling a form.
+Fill-Vault is a browser extension that uses a local AI model to suggest web-form values from your own documents. You review suggestions and source evidence before filling fields. It does not submit forms automatically.
 
-## Requirements
+## What you need
 
-* Google Chrome or another compatible Chromium-based browser.
-* [Ollama](https://ollama.com/download) installed and running locally.
-* The `qwen2.5:7b` model downloaded in Ollama.
-* Enough free disk space and memory to run the model comfortably.
+- Google Chrome or a compatible Chromium browser
+- [Ollama](https://ollama.com/download)
+- The `qwen2.5:7b` model in Ollama
+- Internet access for the initial Ollama model download
+- Sufficient memory and disk space for the model
 
-**Privacy:** Fill-Vault is designed for local AI processing. Review the code and verify network behavior before using sensitive personal documents. Do not upload real identity documents when testing.
+**End users installing a prepared release ZIP do not need Node.js, npm, Git, or Python.** Those tools are only needed to build from source or run the optional local test form.
 
-## Install Fill-Vault
+The model is downloaded separately; it is not included in this repository or the extension ZIP.
 
-### 1. Install Ollama
+## Recommended installation (prepared release)
 
-Download Ollama for your operating system:
+1. Open the project's [GitHub Releases](https://github.com/pantaelija/Fill-Vault/releases) page.
+2. Download `Fill-Vault.zip` from the release assets and extract it to a permanent folder.
+3. Install Ollama from https://ollama.com/download.
+4. Open Terminal (macOS/Linux) or PowerShell (Windows) and run:
 
-* macOS: https://ollama.com/download/mac
-* Windows: https://ollama.com/download/windows
-* Linux: https://ollama.com/download/linux
+   ```bash
+   ollama pull qwen2.5:7b
+   ollama list
+   ```
 
-### 2. Download the AI model
+   Confirm `qwen2.5:7b` appears in the list. Test it with `ollama run qwen2.5:7b`, then type `/bye` to exit.
 
-Open Terminal on macOS/Linux or PowerShell on Windows and run:
+5. Configure Ollama to allow requests from the extension. The exact method depends on how Ollama was installed and launched. See **Configure browser access to Ollama** below.
+6. In Chrome, open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the extracted `fvai` folder (the folder containing `manifest.json`).
+7. Keep the extracted folder in place. Chrome loads the extension from that folder.
+8. Open the extension, go to Documents, import a fictional sample CV or supported document, extract and review facts, then open a form, scan it, review the suggestions and evidence, and fill only the values you approve.
+9. Verify every field yourself before submitting any real form.
+
+Do not load the ZIP file itself; extract it first. Do not select the repository root unless it is the folder containing `manifest.json`.
+
+## Configure browser access to Ollama
+
+Fill-Vault sends local requests to Ollama. Ollama must be running and its allowed-origin configuration must include the installed extension's origin. Extension IDs can vary when the extension is loaded unpacked, so a wildcard extension origin may be used in a local development setup; only do this if you understand and trust the extensions running in your browser.
+
+For a temporary macOS/Linux terminal session, quit the Ollama desktop app/service first, then start the server in a terminal with:
 
 ```bash
-ollama pull qwen2.5:7b
+OLLAMA_ORIGINS="chrome-extension://*,moz-extension://*" ollama serve
 ```
 
-Verify the model is installed:
+Keep that terminal open while using the extension. If Ollama is already running, this command may report that the port is already in use; do not kill unrelated processes blindly. Instead, configure the environment variable for the Ollama app/service and restart it, following the official Ollama instructions for your operating system.
 
-```bash
-ollama list
-```
+For Windows, set `OLLAMA_ORIGINS` in the environment used to launch Ollama, then restart Ollama. The exact steps differ between launching Ollama as a desktop app and running it as a service.
 
-Test it:
+Never expose the Ollama API to the public internet. Keep it bound to localhost and only allow origins you trust. If a request fails, check the extension's error message and the Ollama logs.
 
-```bash
-ollama run qwen2.5:7b
-```
+## Build from source (developers)
 
-Type a short test message. Exit the model with `/bye`.
-
-Keep Ollama running while using Fill-Vault.
-
-### 3. Download the extension
-
-Download `Fill-Vault.zip` from the project's GitHub Releases page and extract it to a permanent folder.
-
-Do not load the ZIP file directly. The extracted folder must contain the extension's `manifest.json` file.
-
-### 4. Load the extension in Chrome
-
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select the extracted `fvai` folder.
-5. Confirm that Fill-Vault appears without an extension error.
-
-### 5. Test the workflow
-
-1. Open the extension.
-2. Open its Documents page.
-3. Import a sample CV or text document.
-4. Extract facts and review the results.
-5. Open a test form.
-6. Scan the form and review the suggested values and evidence.
-7. Select the values you want and fill the form.
-8. Verify every field manually. Fill-Vault does not submit the form for you.
-
-Use fictional sample data for your first test.
-
-## Build from source
-
-Install a current Node.js LTS release, then clone the repository:
+Install a current Node.js LTS release. Then:
 
 ```bash
 git clone https://github.com/pantaelija/Fill-Vault.git
 cd Fill-Vault
+npm ci
+bash setup.sh
+bash build-release.sh
 ```
 
-Install the extension's local libraries:
+`setup.sh` prepares document-processing libraries under `fvai/lib/`. `build-release.sh` checks the generated files and creates `dist/Fill-Vault.zip`. The ZIP is a distribution artifact and is not committed to Git.
+
+Commit `package.json` and `package-lock.json` so dependency versions remain reproducible. Do not commit generated `node_modules/`, `fvai/lib/`, or `dist/` files.
+
+## Optional local sample form
+
+Install Python 3, then from the repository root run:
 
 ```bash
-bash ./setup.sh
+cd test
+python3 -m http.server 8000
 ```
 
-Build a distributable ZIP:
-
-```bash
-bash ./build-release.sh
-```
-
-The resulting package is `dist/Fill-Vault.zip`. Test it in a fresh browser profile before publishing.
+Open `http://localhost:8000/form.html` in Chrome. Use Ctrl+C in the terminal to stop the server.
 
 ## Troubleshooting
 
 ### Ollama is unavailable
 
-* Open the Ollama application.
-* Run `ollama list` to verify that `qwen2.5:7b` is installed.
-* Confirm that the local API responds at `http://localhost:11434/api/tags`.
-* If Ollama is not running, start it using the normal instructions for your operating system.
+- Make sure Ollama is running.
+- Run `ollama list` and confirm `qwen2.5:7b` is installed.
+- Confirm the local API responds at `http://localhost:11434/api/tags`.
+- Confirm `OLLAMA_ORIGINS` includes the extension origin and restart Ollama after changing it.
+- Inspect errors at `chrome://extensions`.
 
-### The model is missing
+### Missing document-processing files
 
-Run:
+For a source checkout, run `bash setup.sh` again and inspect its output. For a release ZIP, report the problem against the release; do not ask end users to install Node.js unless they are building from source.
 
-```bash
-ollama pull qwen2.5:7b
-```
+### Slow responses or memory errors
 
-### The extension does not load
+Qwen 2.5 7B is a multi-gigabyte model and needs additional memory to run. Speed depends on system memory, CPU/GPU and document length. This project cannot guarantee good performance on every computer. Test on the target hardware before a demo.
 
-* Select the extracted `fvai` directory, not the repository root or ZIP file.
-* Open `chrome://extensions` and inspect the error details.
-* If a library is missing, rebuild the package from source.
+### Incorrect or unsupported fields
 
-### Document extraction fails
-
-* Rebuild using `bash ./build-release.sh`.
-* Check that the generated `fvai/lib/` directory contains the required libraries.
-* Review the extension's error messages.
-
-### Form fields are not filled correctly
-
-* Review each suggestion and its supporting evidence.
-* Try a standard HTML form.
-* Do not assume every website or custom dropdown is supported.
+Review the proposed value and source evidence. Leave uncertain fields blank and correct values manually. Websites with custom controls may not be supported.
 
 ## Privacy and safety
 
-Review all AI suggestions before using them. Never allow an AI-generated answer to silently replace important personal information. Do not automatically submit forms containing legal, financial, medical or identity information.
+The project is designed to use a local model, but verify the extension's actual network requests, browser storage and permissions before using sensitive documents. Use fictional sample data for demos. Always review AI-generated values; do not automatically submit forms containing legal, financial, medical or identity information.
+
+## Development and release checklist
+
+Before publishing a release, test the extracted ZIP in a clean Chrome profile and verify:
+- the extension loads without errors;
+- document extraction works for each advertised format;
+- Ollama can be reached and `qwen2.5:7b` responds;
+- source evidence supports suggested values;
+- unsupported facts are not invented;
+- selected fields fill correctly; and
+- the form is not submitted automatically.
 
 ## License
 

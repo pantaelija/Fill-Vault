@@ -1,6 +1,12 @@
+# JavaScript dependencies (development/build only)
 node_modules/
+
+# Generated third-party browser libraries; included in release ZIP, not Git
 fvai/lib/
-package.json
-package-lock.json
-.DS_Store
+
+# Release artifacts
+dist/
 *.zip
+
+# macOS
+.DS_Store
