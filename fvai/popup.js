@@ -1,5 +1,5 @@
 import { getData, ollamaChat, norm } from './common.js';
-import { findExactSelectOption } from './matching.mjs';
+import { findExactSelectOption, validateMatches } from './matching.mjs';
 const $ = id => document.getElementById(id);
 const status = m => { $('status').textContent = m; };
 let tabId, rows = [];
@@ -75,8 +75,9 @@ $('scan').onclick = async () => {
       (f.options ? ` options=[${f.options.slice(0, 40).map(o => o.text).join(' | ')}]` : '')).join('\n');
     const out = await ollamaChat(SYSTEM, `FACTS:\n${factList}\n\nFIELDS:\n${fieldList}`, SCHEMA);
 
+    const safeMatches = validateMatches(out, fields, facts);
     rows = []; const matched = new Set();
-    for (const m of out.matches) {
+    for (const m of safeMatches) {
       const f = fields.find(x => x.id === m.field_id), fact = facts[m.fact_index];
       if (!f || !fact || matched.has(f.id)) continue;
       const value = coerce(f, fact.value);
@@ -95,7 +96,7 @@ $('scan').onclick = async () => {
     renderRows();
     const blanks = fields.filter(f => !matched.has(f.id)).map(f => f.label || f.name || f.placeholder || '(unlabeled)');
     $('blank').textContent = blanks.length ? 'Left blank (no supporting evidence): ' + blanks.join(', ') : '';
-    status(`${rows.length} of ${fields.length} fields have supporting evidence (${facts.length} facts stored, ${out.matches.length} model matches, ${viaRules} by rules). Review, then fill.`);
+    status(`${rows.length} of ${fields.length} fields have supporting evidence (${facts.length} facts stored, ${safeMatches.length} validated model matches, ${viaRules} by rules). Review, then fill.`);
     $('fill').hidden = !rows.length;
   } catch (e) { status('Error: ' + e.message); }
 };
