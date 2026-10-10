@@ -1,4 +1,5 @@
 import { getData, ollamaChat, norm } from './common.js';
+import { findExactSelectOption } from './matching.mjs';
 const $ = id => document.getElementById(id);
 const status = m => { $('status').textContent = m; };
 let tabId, rows = [];
@@ -21,9 +22,10 @@ function toISO(v) {
 }
 function coerce(f, v) {
   if (f.tag === 'select') {
-    const n = norm(v);
-    const o = f.options.find(o => norm(o.text) === n || norm(o.value) === n) ||
-      f.options.find(o => norm(o.text).length > 2 && (norm(o.text).includes(n) || n.includes(norm(o.text))));
+    // Be conservative: a partial match can silently select the wrong country,
+    // qualification, or other consequential option. If there is no exact match,
+    // leave the field for the user to complete manually.
+    const o = findExactSelectOption(f.options, v);
     return o ? o.text : null;
   }
   if (f.type === 'date') return toISO(v);
