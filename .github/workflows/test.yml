@@ -22,5 +22,7 @@ jobs:
           cache: "npm"
       - name: Install locked dependencies
         run: npm ci
+      - name: Check shell script syntax
+        run: bash -n setup-mac.command setup-linux.sh start-mac.command start-linux.sh build-release.sh
       - name: Run automated tests
         run: npm test
