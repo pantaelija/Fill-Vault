@@ -16,7 +16,7 @@ if [[ ! -f test/form.html ]]; then
 fi
 
 echo "Checking model..."
-if ! ollama list | grep -q 'qwen2.5:7b'; then
+if ! ollama list | grep 'qwen2.5:7b' >/dev/null; then
   echo "Model missing. Run: ollama pull qwen2.5:7b" >&2
   exit 1
 fi
