@@ -1,5 +1,5 @@
 import { getData, ollamaChat, norm } from './common.js';
-import { findExactSelectOption, validateMatches } from './matching.mjs';
+import { findExactSelectOption, validateMatches, findFactIndexByLabel } from './matching.mjs';
 const $ = id => document.getElementById(id);
 const status = m => { $('status').textContent = m; };
 let tabId, rows = [];
@@ -39,7 +39,7 @@ const RULES = [
   [/gpa|cgpa|grade point/i, /gpa|cgpa/i],
   [/birth|dob/i, /birth|dob/i],
   [/e-?mail/i, /e-?mail/i],
-  [/phone|mobile|\btel\b|contact number/i, /phone|mobile|tel/i],
+  [/phone|mobile|\btel\b|telephone|contact number|cell number/i, /phone|mobile|\btel\b|telephone|contact number|cell number/i],
   [/graduat/i, /graduat/i],
   [/degree|qualification|program/i, /degree|qualification|program/i],
   [/address/i, /address/i],
@@ -48,11 +48,11 @@ const RULES = [
 const split = t => String(t || '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_\-]+/g, ' ');
 function fallback(f, facts) {
   const text = split([f.label, f.name, f.placeholder, f.type === 'email' ? 'email' : '', f.type === 'tel' ? 'phone' : ''].join(' ')).trim();
-  const full = facts.findIndex(x => /^(full_)?name$|full_name/i.test(x.label));
+  const full = findFactIndexByLabel(facts, /^(full )?name$|full name/i);
   if (full >= 0 && /first ?name|given name/i.test(text)) return { i: full, value: facts[full].value.trim().split(/\s+/)[0] };
   if (full >= 0 && /last ?name|surname|family name/i.test(text)) { const p = facts[full].value.trim().split(/\s+/); if (p.length > 1) return { i: full, value: p[p.length - 1] }; }
-  for (const [fr, lr] of RULES) if (fr.test(text)) { const i = facts.findIndex(x => lr.test(x.label)); if (i >= 0) return { i, value: facts[i].value }; }
-  if (/user ?number|mobile|phone/i.test(text)) { const i = facts.findIndex(x => /phone|mobile/i.test(x.label)); if (i >= 0) return { i, value: facts[i].value }; }
+  for (const [fr, lr] of RULES) if (fr.test(text)) { const i = findFactIndexByLabel(facts, lr); if (i >= 0) return { i, value: facts[i].value }; }
+  if (/user ?number|mobile|phone|telephone|contact number|cell number/i.test(text)) { const i = findFactIndexByLabel(facts, /phone|mobile|telephone|tel|contact number|cell number/); if (i >= 0) return { i, value: facts[i].value }; }
   return null;
 }
 const SENSITIVE = /\b(id|passport|national|ssn|social security|tax|license|licence)\b/i;
