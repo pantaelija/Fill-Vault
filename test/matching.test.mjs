@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findExactSelectOption } from '../fvai/matching.mjs';
+import { findExactSelectOption, normalizeLabel, findFactIndexByLabel } from '../fvai/matching.mjs';
 
 const options = [
   { value: '', text: 'Choose one' },
@@ -60,4 +60,24 @@ test('rejects malformed model responses safely', () => {
   assert.deepEqual(validateMatches(null, fields, facts), []);
   assert.deepEqual(validateMatches({ matches: 'not an array' }, fields, facts), []);
   assert.deepEqual(validateMatches({ matches: [null, {}, { field_id: 0 }] }, fields, facts), []);
+});
+
+
+test('normalizes common extracted label formats without changing values', () => {
+  assert.equal(normalizeLabel('mobile_number'), 'mobile number');
+  assert.equal(normalizeLabel('contact-number'), 'contact number');
+  assert.equal(normalizeLabel('mobileNumber'), 'mobile number');
+  assert.equal(normalizeLabel('Phone Number'), 'phone number');
+});
+
+test('finds phone facts across equivalent normalized labels', () => {
+  const phoneFacts = [
+    { label: 'mobile_number', value: '9800000000' },
+    { label: 'contact_number', value: '9811111111' },
+    { label: 'email', value: 'asha@example.com' }
+  ];
+  assert.equal(findFactIndexByLabel(phoneFacts, /phone|mobile|telephone|tel|contact number|cell number/), 0);
+  assert.equal(findFactIndexByLabel([{ label: 'contact-number' }], /contact number/), 0);
+  assert.equal(findFactIndexByLabel([{ label: 'mobileNumber' }], /mobile number/), 0);
+  assert.equal(findFactIndexByLabel([{ label: 'email' }], /phone|mobile|contact number/), -1);
 });
