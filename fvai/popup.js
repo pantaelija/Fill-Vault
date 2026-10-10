@@ -43,7 +43,7 @@ const RULES = [
   [/graduat/i, /graduat/i],
   [/degree|qualification|program/i, /degree|qualification|program/i],
   [/address/i, /address/i],
-  [/^(full |applicant |your |candidate |student )?name$|full name|applicant name|your name/i, /^(full_)?name$|full_name/i],
+  [/^(full |applicant |your |candidate |student )?name$|full name|applicant name|your name/i, /^(full )?name$|full name/i],
 ];
 const split = t => String(t || '').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_\-]+/g, ' ');
 function fallback(f, facts) {
