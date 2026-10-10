@@ -1,10 +1,13 @@
-name: Build Fill-Vault release ZIP
+name: Build and publish Fill-Vault release
 
 on:
   workflow_dispatch:
   push:
     tags:
       - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -22,14 +25,28 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Run tests
+        run: npm test
+
       - name: Prepare browser libraries
         run: bash setup.sh
 
       - name: Build ZIP
         run: bash build-release.sh
 
-      - name: Upload ZIP artifact
+      - name: Upload ZIP as a workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: Fill-Vault
           path: dist/Fill-Vault.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Attach ZIP to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Fill-Vault ${{ github.ref_name }}
+          generate_release_notes: true
+          files: dist/Fill-Vault.zip
+          fail_on_unmatched_files: true
