@@ -11,6 +11,7 @@ const options = [
 
 test('matches option text without case or whitespace sensitivity', () => {
   assert.equal(findExactSelectOption(options, '  nePAL  '), options[1]);
+  assert.equal(findExactSelectOption(options, 'United   States'), options[2]);
 });
 
 test('matches an exact option value', () => {
