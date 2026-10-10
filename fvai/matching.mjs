@@ -1,6 +1,6 @@
 // Match select options conservatively. Partial matches can silently choose a
 // different answer, so callers should leave unmatched fields for manual review.
-const normalize = value => String(value ?? '').toLowerCase().replace(/\\s+/g, ' ').trim();
+const normalize = value => String(value ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
 
 export function findExactSelectOption(options, value) {
   const wanted = normalize(value);
